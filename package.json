@@ -7,7 +7,8 @@
     "drizzle-kit": "^0.22.1",
     "drizzle-orm": "^0.31.0",
     "hono": "^4.4.2",
-    "pino": "^9.1.0"
+    "pino": "^9.1.0",
+    "valibot": "^0.31.0-rc.7"
   },
   "devDependencies": {
     "@types/bun": "latest"

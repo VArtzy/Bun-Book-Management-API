@@ -8,6 +8,13 @@
       "when": 1717339074668,
       "tag": "0000_shiny_agent_zero",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "6",
+      "when": 1717352534248,
+      "tag": "0001_curious_vertigo",
+      "breakpoints": true
     }
   ]
 }

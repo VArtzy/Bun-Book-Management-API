@@ -11,7 +11,7 @@ Header:
 Request Body:
 ```json
     {
-        "name": "Clean Code",
+        "title": "Clean Code",
         "author": "Farrel Nikoson",
         "rating": 5,
         "cover": "./cover/clean_code.png"
@@ -23,7 +23,7 @@ Response Body Success:
     {
         "data": {
             "id": 1,
-            "name": "Clean Code",
+            "title": "Clean Code",
             "author": "Farrel Nikoson",
             "rating": 5,
             "cover": "./cover/clean_code.png"
@@ -51,7 +51,7 @@ Response Body Success:
     {
         "data": {
             "id": 1,
-            "name": "Clean Code",
+            "title": "Clean Code",
             "author": "Farrel Nikoson",
             "rating": 5,
             "cover": "./cover/clean_code.png"
@@ -98,7 +98,7 @@ Header:
 Request Body:
 ```json
     {
-        "name": "Clean Code",
+        "title": "Clean Code",
         "author": "Farrel Nikoson",
         "rating": 5,
         "cover": "./cover/clean_code.png"
@@ -110,7 +110,7 @@ Response Body Success:
     {
         "data": {
             "id": 1,
-            "name": "Clean Code",
+            "title": "Clean Code",
             "author": "Farrel Nikoson",
             "rating": 5,
             "cover": "./cover/clean_code.png"
@@ -138,7 +138,7 @@ Response Body Success:
     {
         "data": {
             "id": 1,
-            "name": "Clean Code",
+            "title": "Clean Code",
             "author": "Farrel Nikoson",
             "rating": 5,
             "cover": "./cover/clean_code.png"
@@ -159,7 +159,7 @@ Endpoint: GET /api/books/:id/current
 
 Query params:
 
-- name: search by name, using like, optional
+- title: search by title, using like, optional
 - author: search by author, using like, optional
 - rating: search by rating, descending or ascending, optional
 - cursor: pointer to fetch next records, optional
@@ -175,14 +175,14 @@ Response Body Success:
         "data": [
             {
                 "id": 1,
-                "name": "Clean Code",
+                "title": "Clean Code",
                 "author": "Farrel Nikoson",
                 "rating": 5,
                 "cover": "./cover/clean_code.png"
             },
             {
                 "id": 2,
-                "name": "Range",
+                "title": "Range",
                 "author": "David Epstein",
                 "rating": 4,
                 "cover": "./cover/range.png"
@@ -205,7 +205,7 @@ Header:
 
 Query params:
 
-- name: search by name, using like, optional
+- title: search by title, using like, optional
 - author: search by author, using like, optional
 - rating: search by rating, descending or ascending, optional
 - cursor: pointer to fetch next records, optional
@@ -217,14 +217,14 @@ Response Body Success:
         "data": [
             {
                 "id": 1,
-                "name": "Clean Code",
+                "title": "Clean Code",
                 "author": "Farrel Nikoson",
                 "rating": 5,
                 "cover": "./cover/clean_code.png"
             },
             {
                 "id": 2,
-                "name": "Range",
+                "title": "Range",
                 "author": "David Epstein",
                 "rating": 4,
                 "cover": "./cover/range.png"
