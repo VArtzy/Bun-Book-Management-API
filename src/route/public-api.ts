@@ -1,4 +1,2 @@
 import { app } from "../application/app"
-import { UserController } from "../controller/user-controller"
-
-app.post("/api/users", UserController.register)
+app.get("/api/test", (c) => c.text("Hello World"))
