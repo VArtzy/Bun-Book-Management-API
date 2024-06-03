@@ -6,7 +6,6 @@ import { db } from '../application/database'
 import { count, eq } from 'drizzle-orm'
 import { users } from '../database/schema'
 import { ResponseError } from '../error/response-error'
-import { password } from 'bun'
 
 export class UserController {
     static register: Handler = async (c, next) => {
@@ -20,7 +19,7 @@ export class UserController {
                 throw new ResponseError(400, 'Username already exists')
             }
 
-            validated.password = await password.hash(validated.password, { algorithm: 'bcrypt', cost: 10 })
+            validated.password = await Bun.password.hash(validated.password, { algorithm: 'bcrypt', cost: 10 })
 
             const user = await db.insert(users).values({
                 username: validated.username,
