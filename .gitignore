@@ -1,2 +1,6 @@
+# should be ignore
+src/database/meta
+src/database/migration
+src/database/db.sqlite
 # deps
 node_modules/

@@ -1,7 +1,17 @@
 import { Hono } from 'hono'
-import { UserController } from "../controller/user-controller"
-import { errorMiddleware } from '../middleware/error-middleware'
+import { ValiError } from 'valibot'
+import { HTTPException } from 'hono/http-exception'
 
-export const app = new Hono()
-app.use(errorMiddleware)
-app.post("/api/users", UserController.register)
+export const app = new Hono().basePath('/api')
+
+app.onError((err, c) => {
+    console.log(err)
+    if (err instanceof ValiError) {
+        return c.json({ error: err.message }, 400)
+    } else if (err instanceof HTTPException) {
+        return c.json({ error: err.message }, err.status)
+    } else {
+        return c.json({ error: 'Internal Server Error' }, 500)
+    }
+})
+

@@ -14,7 +14,7 @@ export type CreateUserRequest = {
 
 export function toUserResponse(user: typeof users.$inferSelect): UserResponse {
     return {
-        name: user.name,
-        username: user.username
+        username: user.username,
+        name: user.name
     }
 }

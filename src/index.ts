@@ -1,5 +1,3 @@
-import { app } from './application/app'
-
-app.get("/api/test", (c) => c.text("Hello World"))
+import { app } from './route/api'
 
 export default app
