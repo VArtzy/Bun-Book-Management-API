@@ -156,3 +156,41 @@ describe('DELETE /api/books/:id', () =>  {
     })
 })
 
+describe('GET /api/books/:id', () =>  {
+    beforeEach(async () => {
+        await UserTest.create()
+        await BookTest.create()
+    })
+    afterEach(async () => {
+        await BookTest.delete()
+        await UserTest.delete()
+    })
+
+    it('should get book', async() => {
+        const book = await BookTest.get()
+        const response = await app.request(`/api/books/${book[0].id}`, {
+            method: 'GET',
+            headers: new Headers({ "X-API-TOKEN": "test" })
+        })
+        const json = await response.json()
+
+        log.debug(response.body)
+        expect(response.status).toBe(200)
+        expect(json.data.title).toBe("test")
+        expect(json.data.author).toBe("test")
+        expect(json.data.rating).toBe(5)
+        expect(json.data.cover).toBeDefined()
+    })
+
+    it('should reject get book if requested book is not found', async() => {
+        const response = await app.request(`/api/books/0`, {
+            method: 'GET',
+            headers: new Headers({ "X-API-TOKEN": "test" }),
+        })
+
+        log.debug(response.body)
+        expect(response.status).toBe(404)
+        expect(response.json()).toBeDefined()
+    })
+})
+

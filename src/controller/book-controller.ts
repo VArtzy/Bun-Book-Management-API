@@ -42,4 +42,18 @@ export class BookController {
 
         return c.json({ data: "OK" }, 200)
     }
+
+    static get: Handler = async (c) => {
+        const id = Number(c.req.param('id'))
+
+        const result = await db.query.books.findFirst({
+            where: eq(books.id, id)
+        })
+        if (!result) {
+            throw new HTTPException(404, { message: `Book with id ${id} is not found` })
+        }
+        const response = toBookResponse(result)
+
+        return c.json({ data: response }, 200)
+    }
 }

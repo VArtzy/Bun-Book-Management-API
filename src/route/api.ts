@@ -12,5 +12,6 @@ app.delete('/users/current', UserController.logout)
 app.post('/books', BookController.create)
 app.put('/books/:id', BookController.update)
 app.delete('/books/:id', BookController.delete)
+app.get('/books/:id', BookController.get)
 
 export { app }
