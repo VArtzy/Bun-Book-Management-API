@@ -4,7 +4,7 @@ import { Validation } from "../validation/validation";
 import { db } from "../application/database";
 import { books } from "../database/schema";
 import { BookValidation } from "../validation/book-validation";
-import { eq } from "drizzle-orm";
+import { eq, gt, asc, like, and } from "drizzle-orm";
 import { HTTPException } from "hono/http-exception";
 
 export class BookController {
@@ -55,5 +55,38 @@ export class BookController {
         const response = toBookResponse(result)
 
         return c.json({ data: response }, 200)
+    }
+
+    static search: Handler = async (c) => {
+        const request = {
+            title: c.req.query('title'),
+            author: c.req.query('author'),
+            rating: c.req.query('rating') ? Number(c.req.query('rating')) : undefined,
+            cursor: c.req.query('cursor') ? Number(c.req.query('cursor')) : undefined,
+            size: c.req.query('size') ? Number(c.req.query('size')) : 10,
+        }
+        const validated = Validation.validate(BookValidation.SEARCH, request)
+
+        const results = await db.select().from(books)
+        .where(
+            and(
+                validated.cursor ? gt(books.id, validated.cursor) : undefined,
+                validated.title ? like(books.title, `%${validated.title}%`) : undefined,
+                validated.author ? like(books.author, `%${validated.author}%`) : undefined,
+                validated.rating ? eq(books.rating, validated.rating) : undefined
+            )
+        )
+        .limit(request.size)
+        .orderBy(asc(books.id))
+
+        let cursor = null
+        if (results[0]) {
+            cursor = results[results.length - 1].id
+        }
+
+        return c.json({ data: results.map(book => toBookResponse(book)), paging: {
+            cursor,
+            size: validated.size
+        } })
     }
 }

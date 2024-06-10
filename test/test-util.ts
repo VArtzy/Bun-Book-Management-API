@@ -1,4 +1,4 @@
-import { eq } from 'drizzle-orm'
+import { eq, or } from 'drizzle-orm'
 import { db } from '../src/application/database'
 import { users, books } from '../src/database/schema'
 
@@ -29,7 +29,7 @@ export class UserTest {
 
 export class BookTest {
     static async delete() {
-        await db.delete(books).where(eq(books.title, "test"))
+        await db.delete(books).where(or(eq(books.title, "test"), eq(books.title, "test update")))
     }
 
     static async create() {

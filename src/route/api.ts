@@ -10,6 +10,7 @@ app.patch('/users/current', UserController.update)
 app.delete('/users/current', UserController.logout)
 
 app.post('/books', BookController.create)
+app.get('/books', BookController.search)
 app.put('/books/:id', BookController.update)
 app.delete('/books/:id', BookController.delete)
 app.get('/books/:id', BookController.get)

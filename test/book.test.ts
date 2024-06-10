@@ -169,7 +169,6 @@ describe('GET /api/books/:id', () =>  {
     it('should get book', async() => {
         const book = await BookTest.get()
         const response = await app.request(`/api/books/${book[0].id}`, {
-            method: 'GET',
             headers: new Headers({ "X-API-TOKEN": "test" })
         })
         const json = await response.json()
@@ -184,7 +183,6 @@ describe('GET /api/books/:id', () =>  {
 
     it('should reject get book if requested book is not found', async() => {
         const response = await app.request(`/api/books/0`, {
-            method: 'GET',
             headers: new Headers({ "X-API-TOKEN": "test" }),
         })
 
@@ -194,3 +192,93 @@ describe('GET /api/books/:id', () =>  {
     })
 })
 
+describe('GET /api/books', () =>  {
+    beforeEach(async () => {
+        await UserTest.create()
+        await BookTest.create()
+    })
+    afterEach(async () => {
+        await BookTest.delete()
+        await UserTest.delete()
+    })
+
+    it('should search book', async() => {
+        const response = await app.request(`/api/books`, {
+            headers: new Headers({ "X-API-TOKEN": "test" })
+        })
+        const json = await response.json()
+
+        log.debug(response.body)
+        expect(response.status).toBe(200)
+        expect(json.data.length).toBe(1)
+        expect(json.paging.cursor).toBeDefined()
+        expect(json.paging.size).toBe(10)
+    })
+
+
+    it('should search book by title', async() => {
+        const response = await app.request(`/api/books?title=es`, {
+            headers: new Headers({ "X-API-TOKEN": "test" }),
+        })
+        const json = await response.json()
+
+        log.debug(response.body)
+        expect(response.status).toBe(200)
+        expect(json.data.length).toBe(1)
+        expect(json.paging.cursor).toBeDefined()
+        expect(json.paging.size).toBe(10)
+    })
+
+    it('should search book by author', async() => {
+        const response = await app.request(`/api/books?author=tes`, {
+            headers: new Headers({ "X-API-TOKEN": "test" }),
+        })
+        const json = await response.json()
+
+        log.debug(response.body)
+        expect(response.status).toBe(200)
+        expect(json.data.length).toBe(1)
+        expect(json.paging.cursor).toBeDefined()
+        expect(json.paging.size).toBe(10)
+    })
+    
+    it('should search book by rating', async() => {
+        const response = await app.request(`/api/books?rating=5`, {
+            headers: new Headers({ "X-API-TOKEN": "test" }),
+        })
+        const json = await response.json()
+
+        log.debug(response.body)
+        expect(response.status).toBe(200)
+        expect(json.data.length).toBe(1)
+        expect(json.paging.cursor).toBeDefined()
+        expect(json.paging.size).toBe(10)
+    })
+    
+    it('should search book with no result', async() => {
+        const response = await app.request(`/api/books?title=salah`, {
+            headers: new Headers({ "X-API-TOKEN": "test" }),
+        })
+        const json = await response.json()
+
+        log.debug(response.body)
+        expect(response.status).toBe(200)
+        expect(json.data.length).toBe(0)
+        expect(json.paging.cursor).toBeNull()
+        expect(json.paging.size).toBe(10)
+    })
+
+    it('should search book with paging', async() => {
+        const book = await BookTest.get()
+        const response = await app.request(`/api/books?cursor=${book[0].id - 1}&size=1`, {
+            headers: new Headers({ "X-API-TOKEN": "test" }),
+        })
+        const json = await response.json()
+
+        log.debug(response.body)
+        expect(response.status).toBe(200)
+        expect(json.data.length).toBe(1)
+        expect(json.paging.cursor).toBeDefined()
+        expect(json.paging.size).toBe(1)
+    })
+})

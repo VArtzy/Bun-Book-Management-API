@@ -14,4 +14,12 @@ export class BookValidation {
         rating: v.optional(v.pipe(v.number(), v.minValue(1), v.maxValue(5))),
         cover: v.optional(v.pipe(v.string(), v.minLength(1), v.maxLength(256))),
     })
+
+    static readonly SEARCH = v.object({
+        title: v.optional(v.pipe(v.string(), v.minLength(1), v.maxLength(100))),
+        author: v.optional(v.pipe(v.string(), v.minLength(1), v.maxLength(100))),
+        rating: v.optional(v.pipe(v.number(), v.minValue(1), v.maxValue(5))),
+        cursor: v.optional(v.number()),
+        size: v.optional(v.pipe(v.number(), v.minValue(1), v.maxValue(100)))
+    })
 }
