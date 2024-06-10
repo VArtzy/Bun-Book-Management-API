@@ -2,7 +2,6 @@ import { describe, afterEach, it, expect, beforeEach } from 'bun:test'
 import { UserTest } from './test-util'
 import app from '../src'
 import { log } from '../src/application/logging'
-import { password } from 'bun'
 
 describe('POST /api/users', () =>  {
     afterEach(async () => {

@@ -1,6 +1,6 @@
 import { eq } from 'drizzle-orm'
 import { db } from '../src/application/database'
-import { users } from '../src/database/schema'
+import { users, books } from '../src/database/schema'
 
 export class UserTest {
     static async delete() {
@@ -24,5 +24,30 @@ export class UserTest {
         }
 
         return user
+    }
+}
+
+export class BookTest {
+    static async delete() {
+        await db.delete(books).where(eq(books.title, "test"))
+    }
+
+    static async create() {
+        await db.insert(books).values({
+            title: "test",
+            author: "test",
+            rating: 5,
+            cover: "https://test.com/test.jpg"
+        })
+    }
+
+    static async get() {
+        const book = await db.select().from(books).where(eq(books.title, "test"))
+
+        if (!book) {
+            throw new Error("Book is not found");
+        }
+
+        return book
     }
 }

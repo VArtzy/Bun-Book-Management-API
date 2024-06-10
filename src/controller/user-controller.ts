@@ -21,11 +21,7 @@ export class UserController {
 
         validated.password = await Bun.password.hash(validated.password, { algorithm: 'bcrypt', cost: 10 })
 
-        const user = await db.insert(users).values({
-            username: validated.username,
-            password: validated.password,
-            name: validated.name
-        }).returning()
+        const user = await db.insert(users).values(validated).returning()
 
         const response = toUserResponse(user[0])
 
