@@ -5,6 +5,7 @@ jobs:
   Explore-GitHub-Actions:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v4
       - uses: oven-sh/setup-bun@v1
       - name: Bun Setup
         run: |
