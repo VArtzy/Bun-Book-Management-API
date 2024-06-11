@@ -15,4 +15,4 @@ jobs:
   		- name: bun install, build and test
 		run: |
   			bun install
-	 		bun test
+	 			bun test
