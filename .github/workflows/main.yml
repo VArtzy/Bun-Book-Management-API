@@ -1,6 +1,6 @@
 on: [push]
 jobs:
-  test:
+  testingsa:
     runs-on: ubuntu-latest
     steps:
       - name: Setup Bun
