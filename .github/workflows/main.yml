@@ -5,5 +5,4 @@ jobs:
   Explore-GitHub-Actions:
     runs-on: ubuntu-latest
     steps:
-      - name: Setup Bun
       - uses: oven-sh/setup-bun@v1
