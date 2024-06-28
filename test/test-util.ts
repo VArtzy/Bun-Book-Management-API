@@ -1,6 +1,6 @@
 import { eq, or } from 'drizzle-orm'
 import { db } from '../src/application/database'
-import { users, books } from '../src/database/schema'
+import { users, books, collections, reviews } from '../src/database/schema'
 
 export class UserTest {
     static async delete() {
@@ -33,12 +33,12 @@ export class BookTest {
     }
 
     static async create() {
-        await db.insert(books).values({
+        return await db.insert(books).values({
             title: "test",
             author: "test",
             rating: 5,
             cover: "https://test.com/test.jpg"
-        })
+        }).returning({ id: books.id })
     }
 
     static async get() {
@@ -49,5 +49,53 @@ export class BookTest {
         }
 
         return book
+    }
+}
+
+export class CollectionTest {
+    static async delete() {
+        await db.delete(collections).where(eq(collections.username, "test"))
+    }
+
+    static async create(bookId: number) {
+        await db.insert(collections).values({
+            bookId,
+            username: "test"
+        })
+    }
+
+    static async get() {
+        const collection = await db.select().from(collections).where(eq(collections.username, "test"))
+
+        if (!collection) {
+            throw new Error("Collection is not found");
+        }
+
+        return collection
+    }
+}
+
+export class ReviewTest {
+    static async delete() {
+        await db.delete(reviews).where(eq(reviews.username, "test"))
+    }
+
+    static async create(bookId: number) {
+        await db.insert(reviews).values({
+            body: "test",
+            rating: 5,
+            bookId,
+            username: "test"
+        })
+    }
+
+    static async get() {
+        const review = await db.select().from(reviews).where(eq(reviews.username, "test"))
+
+        if (!review) {
+            throw new Error("Review is not found");
+        }
+
+        return review
     }
 }

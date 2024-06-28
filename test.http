@@ -1,0 +1,9 @@
+### Login user
+POST http://localhost:3000/api/users/login
+Accept: application/json
+Content-Type: application/json
+
+{
+    "username": "Budi",
+    "password": "rahasia"
+}

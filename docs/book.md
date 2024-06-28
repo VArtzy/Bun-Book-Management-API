@@ -155,7 +155,7 @@ Response Body Error:
 
 ## Get Book From User API
 
-Endpoint: GET /api/books/:id/current
+Endpoint: GET /api/books/current
 
 Query params:
 

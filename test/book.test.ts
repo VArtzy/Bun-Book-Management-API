@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it } from "bun:test"
 import app from "../src"
-import { BookTest, UserTest } from "./test-util"
+import { BookTest, CollectionTest, UserTest } from "./test-util"
 import { log } from "../src/application/logging"
 
 describe('POST /api/books', () =>  {
@@ -241,7 +241,7 @@ describe('GET /api/books', () =>  {
         expect(json.paging.cursor).toBeDefined()
         expect(json.paging.size).toBe(10)
     })
-    
+
     it('should search book by rating', async() => {
         const response = await app.request(`/api/books?rating=5`, {
             headers: new Headers({ "X-API-TOKEN": "test" }),
@@ -254,7 +254,7 @@ describe('GET /api/books', () =>  {
         expect(json.paging.cursor).toBeDefined()
         expect(json.paging.size).toBe(10)
     })
-    
+
     it('should search book with no result', async() => {
         const response = await app.request(`/api/books?title=salah`, {
             headers: new Headers({ "X-API-TOKEN": "test" }),
@@ -271,6 +271,173 @@ describe('GET /api/books', () =>  {
     it('should search book with paging', async() => {
         const book = await BookTest.get()
         const response = await app.request(`/api/books?cursor=${book[0].id - 1}&size=1`, {
+            headers: new Headers({ "X-API-TOKEN": "test" }),
+        })
+        const json = await response.json()
+
+        log.debug(response.body)
+        expect(response.status).toBe(200)
+        expect(json.data.length).toBe(1)
+        expect(json.paging.cursor).toBeDefined()
+        expect(json.paging.size).toBe(1)
+    })
+})
+
+describe('POST /api/books/:id/current', () =>  {
+    beforeEach(async () => {
+        await UserTest.create()
+        await BookTest.create()
+    })
+    afterEach(async () => {
+        await CollectionTest.delete()
+        await BookTest.delete()
+        await UserTest.delete()
+    })
+
+    it('should reject add book to user if requested book is not found', async() => {
+        const response = await app.request(`/api/books/0/current`, {
+            method: 'POST',
+            headers: new Headers({ "X-API-TOKEN": "test" }),
+        })
+
+        log.debug(response.body)
+        expect(response.status).toBe(404)
+        expect(response.json()).toBeDefined()
+    })
+
+    it('should add book to user', async() => {
+        const book = await BookTest.get()
+        const response = await app.request(`/api/books/${book[0].id}/current`, {
+            method: 'POST',
+            headers: new Headers({ "X-API-TOKEN": "test" })
+        })
+        const json = await response.json()
+
+        log.debug(response.body)
+        expect(response.status).toBe(200)
+        expect(json.data.bookId).toBe(book[0].id)
+        expect(json.data.username).toBe("test")
+    })
+})
+
+describe('DELETE /api/books/:id/current', () =>  {
+    beforeEach(async () => {
+        await UserTest.create()
+        const book = await BookTest.create()
+        await CollectionTest.create(book[0].id)
+    })
+    afterEach(async () => {
+        await CollectionTest.delete()
+        await BookTest.delete()
+        await UserTest.delete()
+    })
+
+    it('should delete user book collection', async() => {
+        const book = await BookTest.get()
+        const response = await app.request(`/api/books/${book[0].id}/current`, {
+            method: 'DELETE',
+            headers: new Headers({ "X-API-TOKEN": "test" })
+        })
+        const json = await response.json()
+
+        log.debug(response.body)
+        expect(response.status).toBe(200)
+        expect(json.data).toBe("OK")
+    })
+
+    it('should reject remove collection if requested collection bookId is not found', async() => {
+        const response = await app.request(`/api/books/0/current`, {
+            method: 'DELETE',
+            headers: new Headers({ "X-API-TOKEN": "test" }),
+        })
+
+        log.debug(response.body)
+        expect(response.status).toBe(404)
+        expect(response.json()).toBeDefined()
+    })
+})
+
+describe('GET /api/books/current', () =>  {
+    beforeEach(async () => {
+        await UserTest.create()
+        const book = await BookTest.create()
+        await CollectionTest.create(book[0].id)
+    })
+    afterEach(async () => {
+        await CollectionTest.delete()
+        await BookTest.delete()
+        await UserTest.delete()
+    })
+
+    it('should search book', async() => {
+        const response = await app.request(`api/books/current`, {
+            headers: new Headers({ "X-API-TOKEN": "test" })
+        })
+        const json = await response.json()
+
+        log.debug(response.body)
+        expect(response.status).toBe(200)
+        expect(json.data.length).toBe(1)
+        expect(json.paging.cursor).toBeDefined()
+        expect(json.paging.size).toBe(10)
+    })
+
+
+    it('should search book by title', async() => {
+        const response = await app.request(`api/books/current?title=es`, {
+            headers: new Headers({ "X-API-TOKEN": "test" }),
+        })
+        const json = await response.json()
+
+        log.debug(response.body)
+        expect(response.status).toBe(200)
+        expect(json.data.length).toBe(1)
+        expect(json.paging.cursor).toBeDefined()
+        expect(json.paging.size).toBe(10)
+    })
+
+    it('should search book by author', async() => {
+        const response = await app.request(`api/books/current?author=tes`, {
+            headers: new Headers({ "X-API-TOKEN": "test" }),
+        })
+        const json = await response.json()
+
+        log.debug(response.body)
+        expect(response.status).toBe(200)
+        expect(json.data.length).toBe(1)
+        expect(json.paging.cursor).toBeDefined()
+        expect(json.paging.size).toBe(10)
+    })
+
+    it('should search book by rating', async() => {
+        const response = await app.request(`api/books/current?rating=5`, {
+            headers: new Headers({ "X-API-TOKEN": "test" }),
+        })
+        const json = await response.json()
+
+        log.debug(response.body)
+        expect(response.status).toBe(200)
+        expect(json.data.length).toBe(1)
+        expect(json.paging.cursor).toBeDefined()
+        expect(json.paging.size).toBe(10)
+    })
+
+    it('should search book with no result', async() => {
+        const response = await app.request(`api/books/current?title=salah`, {
+            headers: new Headers({ "X-API-TOKEN": "test" }),
+        })
+        const json = await response.json()
+
+        log.debug(response.body)
+        expect(response.status).toBe(200)
+        expect(json.data.length).toBe(0)
+        expect(json.paging.cursor).toBeNull()
+        expect(json.paging.size).toBe(10)
+    })
+
+    it('should search book with paging', async() => {
+        const book = await BookTest.get()
+        const response = await app.request(`api/books/current?cursor=${book[0].id - 1}&size=1`, {
             headers: new Headers({ "X-API-TOKEN": "test" }),
         })
         const json = await response.json()
