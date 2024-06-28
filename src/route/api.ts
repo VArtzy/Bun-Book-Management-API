@@ -21,5 +21,8 @@ app.delete('/books/:id/current', BookController.remove)
 
 app.post('/books/:bookId/review', ReviewController.create)
 app.put('/books/:bookId/review/:reviewId', ReviewController.update)
+app.get('/books/:bookId/review/:reviewId', ReviewController.get)
+app.delete('/books/:bookId/review/:reviewId', ReviewController.delete)
+app.get('/books/:bookId/review', ReviewController.search)
 
 export { app }
