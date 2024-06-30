@@ -1,8 +1,11 @@
 import { Hono } from 'hono'
 import { ValiError } from 'valibot'
 import { HTTPException } from 'hono/http-exception'
+import { prometheus } from '@hono/prometheus'
 
 export const app = new Hono().basePath('/api')
+
+export const { printMetrics, registerMetrics } = prometheus({ collectDefaultMetrics: true })
 
 app.onError((err, c) => {
     console.log(err)

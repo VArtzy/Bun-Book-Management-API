@@ -2,7 +2,7 @@ import { Handler } from 'hono'
 import { CreateUserRequest, toUserResponse } from '../model/user-model'
 import { UserValidation } from '../validation/user-validation'
 import { Validation } from '../validation/validation'
-import { db } from '../application/database'
+import { db, redis } from '../application/database'
 import { count, eq } from 'drizzle-orm'
 import { users } from '../database/schema'
 import { HTTPException } from 'hono/http-exception'
@@ -41,12 +41,21 @@ export class UserController {
             throw new HTTPException(401, { message: "Username or password is wrong" })
         }
 
+        await redis.connect()
+        const token = await redis.get(validated.username)
+        if (token) {
+            await redis.disconnect()
+            return c.json({ data: { username: user[0].username, name: user[0].name, token } }, 200)
+        } else {
         user = await db.update(users).set({ token: randomUUID() })
         .where(eq(users.username, validated.username)).returning()
         const response = toUserResponse(user[0])
         response.token = user[0].token!
+        await redis.setEx(validated.username, 600, response.token)
+        await redis.disconnect()
 
         return c.json({ data: response }, 200)
+        }
     }
 
     static get: Handler = async (c) => {
